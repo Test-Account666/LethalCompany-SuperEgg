@@ -5,7 +5,9 @@ using System.Reflection;
 using System.Reflection.Emit;
 using HarmonyLib;
 using MonoMod.Utils;
+using Unity.Netcode;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace SuperEgg.Patch;
 
@@ -15,6 +17,10 @@ public static class StunGrenadeItemPatch {
     [HarmonyPostfix]
     // ReSharper disable once InconsistentNaming
     private static void AddEasterEggComponent(StunGrenadeItem __instance) {
+        if (__instance is {
+                IsHost: false, IsServer: false,
+            }) return;
+
         var itemName = __instance.itemProperties.itemName;
 
         if (!itemName.Equals(EggConfig.eggName.Value)) {
@@ -22,8 +28,17 @@ public static class StunGrenadeItemPatch {
             return;
         }
 
-        var easterEgg = __instance.gameObject.AddComponent<EasterEgg>();
+        var easterEggObject = Object.Instantiate(SuperEgg.superEggPrefab);
+        easterEggObject.name = "SuperEgg";
+
+        var easterEgg = easterEggObject.GetComponent<EasterEgg>();
         easterEgg.grabbableObject = __instance;
+
+        var destroyListener = __instance.gameObject.AddComponent<DestroyListener>();
+        destroyListener.AddObject(easterEggObject);
+
+        var networkObject = easterEggObject.GetComponent<NetworkObject>();
+        networkObject.Spawn();
     }
 
     [HarmonyPatch(nameof(StunGrenadeItem.ExplodeStunGrenade))]

@@ -11,6 +11,24 @@ public class EasterEgg : NetworkBehaviour {
     private bool _isSuperEgg;
     private Random _random;
 
+    public override void OnNetworkSpawn() {
+        base.OnNetworkSpawn();
+        SuperEgg.LogDebug("Network haz spawned!!");
+
+        if (!IsHost && !IsServer) return;
+
+        var networkObject = grabbableObject.NetworkObject;
+
+        SetGrabbableObjectClientRpc(networkObject);
+    }
+
+    [ClientRpc]
+    private void SetGrabbableObjectClientRpc(NetworkObjectReference networkObjectReference) {
+        var networkObject = (NetworkObject) networkObjectReference;
+
+        grabbableObject = networkObject.GetComponent<GrabbableObject>();
+    }
+
     private void Start() {
         _random = new((uint) (DateTime.Now.Ticks & 0x0000FFFF));
         _isSuperEgg = _random.NextInt(1, 100) <= EggConfig.superEggChance.Value;
@@ -42,19 +60,39 @@ public class EasterEgg : NetworkBehaviour {
             return;
         }
 
-        var hasEasterEgg = stunGrenadeItem.TryGetComponent<EasterEgg>(out var easterEgg);
+        var hasDestroyListener = stunGrenadeItem.TryGetComponent<DestroyListener>(out var destroyListener);
 
-        if (!hasEasterEgg) {
+        if (!hasDestroyListener) {
+            SuperEgg.Logger.LogDebug("No destroy listener!");
             Landmine.SpawnExplosion(explosionPosition, spawnExplosionEffect, killRange, damageRange,
                                     nonLethalDamage, physicsForce, overridePrefab, goThroughCar);
             return;
         }
+
+        EasterEgg easterEgg = null!;
+
+        foreach (var easterEggObject in destroyListener.destroyWithListener) {
+            var hasEasterEgg = easterEggObject.TryGetComponent(out easterEgg);
+
+            if (hasEasterEgg) break;
+        }
+
+        if (easterEgg == null || !easterEgg) {
+            SuperEgg.Logger.LogDebug("No easter egg!");
+            Landmine.SpawnExplosion(explosionPosition, spawnExplosionEffect, killRange, damageRange,
+                                    nonLethalDamage, physicsForce, overridePrefab, goThroughCar);
+            return;
+        }
+
+        SuperEgg.Logger.LogDebug("Executing on my end!");
 
         easterEgg.ExplodeServerRpc(explosionPosition);
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void ExplodeServerRpc(Vector3 explosionPosition) {
+        SuperEgg.Logger.LogDebug("DO SOMETHING YOU PIECE OF EGG!");
+
         if (DisableExplosion()) {
             SuperEgg.LogDebug("Explosion disabled!");
             return;

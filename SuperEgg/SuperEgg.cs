@@ -4,6 +4,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 using TestAccountCore.Dependencies;
 using TestAccountCore.Dependencies.Compatibility;
+using UnityEngine;
 using static TestAccountCore.Netcode;
 
 namespace SuperEgg;
@@ -11,11 +12,11 @@ namespace SuperEgg;
 [BepInDependency("TestAccount666.TestAccountCore", "1.3.0")]
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class SuperEgg : BaseUnityPlugin {
+    public static GameObject superEggPrefab = null!;
     public static SuperEgg Instance { get; private set; } = null!;
     internal new static ManualLogSource Logger { get; private set; } = null!;
     internal static Harmony? Harmony { get; set; }
 
-    //TODO: Make RPC work!!!!
 
     internal static void Patch() {
         Harmony ??= new(MyPluginInfo.PLUGIN_GUID);
