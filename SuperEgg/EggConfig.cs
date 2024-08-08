@@ -25,6 +25,8 @@ public static class EggConfig {
 
     public static ConfigEntry<bool> enableDebugLogs = null!;
 
+    public static ConfigEntry<bool> enableSellAudio = null!;
+
     public static void Initialize(ConfigFile configFile) {
         superEggChance = configFile.Bind("General", "Super Egg Chance", 100,
                                          new ConfigDescription("Chance for an egg to be a super egg.",
@@ -94,5 +96,8 @@ public static class EggConfig {
 
         enableDebugLogs = configFile.Bind("Debugging", "Enable Debug Log", false, "Enable this, if you really hate your log. "
                                                                                 + "Lunx, you probably want to ignore this one!");
+
+        enableSellAudio = configFile.Bind("Selling", "Enable Sell Audio", true, "If set to true, will play a funny audio after selling. "
+                                                                              + "Only after selling easter eggs, of course :>");
     }
 }

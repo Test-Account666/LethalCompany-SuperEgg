@@ -59,6 +59,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Reference Include="com.github.zehsteam.SellMyScrap">
+          <HintPath>..\include\SellMyScrap.dll</HintPath>
+        </Reference>
         <Reference Include="TestAccount666.TestAccountCore">
             <HintPath>..\include\TestAccount666.TestAccountCore.dll</HintPath>
         </Reference>

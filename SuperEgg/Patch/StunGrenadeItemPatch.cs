@@ -39,6 +39,9 @@ public static class StunGrenadeItemPatch {
 
         var networkObject = easterEggObject.GetComponent<NetworkObject>();
         networkObject.Spawn();
+
+        // ReSharper disable once Unity.InstantiateWithoutParent
+        easterEggObject.transform.parent = __instance.gameObject.transform;
     }
 
     [HarmonyPatch(nameof(StunGrenadeItem.ExplodeStunGrenade))]

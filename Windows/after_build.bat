@@ -23,6 +23,7 @@ copy "%CURRENT_PROJECT%\README.md" "BuildOutput\"
 copy "%CURRENT_PROJECT%\CHANGELOG.md" "BuildOutput\"
 copy "%CURRENT_PROJECT%\icon.png" "BuildOutput\"
 copy "LICENSE" "BuildOutput\"
+copy "EggSell.ogg" "BuildOutput\"
 
 :: Generate manifest and zip file
 call powershell.exe -ExecutionPolicy Bypass -File generate_manifest.ps1

@@ -5,6 +5,7 @@ cp -f "$CURRENT_PROJECT"/README.md BuildOutput/ &&
 cp -f "$CURRENT_PROJECT"/CHANGELOG.md BuildOutput/ &&
 cp -f "$CURRENT_PROJECT"/icon.png BuildOutput/ &&
 cp -f LICENSE BuildOutput/ &&
+cp -f EggSell.ogg BuildOutput/ &&
 ./generate_manifest.sh &&
 ./generate_zipfile.sh &&
 dolphin "./BuildOutput"
